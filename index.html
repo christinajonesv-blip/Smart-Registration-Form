@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Details Task</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -15,12 +17,6 @@
             align-items: center;
         }
 
-        h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-        }
-
-        /* Form Container */
         .form-container {
             background: #ffffff;
             padding: 20px 30px;
@@ -37,7 +33,7 @@
         }
 
         .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             display: flex;
             flex-direction: column;
         }
@@ -45,34 +41,44 @@
         .form-group label {
             font-size: 14px;
             font-weight: bold;
-            margin-bottom: 4px;
+            margin-bottom: 5px;
             color: #555;
         }
 
-        .form-group input[type="text"],
-        .form-group input[type="number"],
-        .form-group input[type="email"],
-        .form-group select {
-            padding: 6px 8px;
+        .form-group input,
+        .form-group textarea {
+            padding: 8px;
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 14px;
+            box-sizing: border-box;
         }
 
-        .radio-group {
-            display: flex;
-            gap: 15px;
-            align-items: center;
+        .form-group textarea {
+            resize: none;
+            height: 90px;
+        }
+
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .warning {
+            color: orange;
+            font-size: 12px;
             margin-top: 4px;
         }
 
-        .radio-group label {
-            font-weight: normal;
-            font-size: 14px;
-            cursor: pointer;
+        .counter {
+            font-size: 12px;
+            text-align: right;
+            margin-top: 4px;
+            color: #555;
         }
 
-        /* Save Button */
         .save-btn {
             background-color: #27ae60;
             color: white;
@@ -85,22 +91,25 @@
             margin-top: 10px;
         }
 
-        .save-btn:hover {
+        .save-btn:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+        }
+
+        .save-btn:hover:not(:disabled) {
             background-color: #219653;
         }
 
-        /* Table Styling */
         table {
             width: 100%;
             max-width: 700px;
             border-collapse: collapse;
             background: #ffffff;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            border-radius: 4px;
-            overflow: hidden;
         }
 
-        th, td {
+        th,
+        td {
             border: 1px solid #ddd;
             padding: 10px 12px;
             text-align: left;
@@ -110,10 +119,8 @@
         th {
             background-color: #eaeded;
             color: #333;
-            font-weight: bold;
         }
 
-        /* Delete Button Styling */
         .delete-btn {
             background-color: #e74c3c;
             color: white;
@@ -121,7 +128,6 @@
             padding: 5px 10px;
             border-radius: 3px;
             cursor: pointer;
-            font-size: 12px;
         }
 
         .delete-btn:hover {
@@ -129,102 +135,310 @@
         }
     </style>
 </head>
+
 <body>
+
     <div class="form-container">
+
         <h3>STUDENT FORM</h3>
+
         <form id="studentForm">
+
+            <!-- NAME -->
             <div class="form-group">
                 <label for="name">Name</label>
-                <input type="text" id="name" required>
+
+                <input type="text" id="name">
+
+                <span id="nameError" class="error">
+                    Name cannot be empty
+                </span>
             </div>
 
+
+            <!-- EMAIL -->
             <div class="form-group">
-                <label for="age">Age</label>
-                <input type="number" id="age" required>
+                <label for="email">Email</label>
+
+                <input type="email" id="email">
+
+                <span id="emailError" class="error">
+                    Please enter a valid email address
+                </span>
             </div>
 
+
+            <!-- PASSWORD -->
             <div class="form-group">
-                <label>Gender</label>
-                <div class="radio-group">
-                    <label><input type="radio" name="gender" value="Male" required> Male</label>
-                    <label><input type="radio" name="gender" value="Female"> Female</label>
+                <label for="password">Password</label>
+
+                <input type="password" id="password">
+
+                <span id="passwordError" class="error">
+                    Password must contain at least 6 characters
+                </span>
+            </div>
+
+
+            <!-- BIO -->
+            <div class="form-group">
+                <label for="bio">Bio</label>
+
+                <textarea id="bio" maxlength="200"></textarea>
+
+                <div id="counter" class="counter">
+                    0 / 200 characters
                 </div>
+
+                <span id="bioWarning" class="warning"></span>
             </div>
 
-            <div class="form-group">
-                <label for="course">Course</label>
-                <select id="course" required>
-                    <option value="" disabled selected>Select Course</option>
-                    <option value="JavaScript">JavaScript</option>
-                    <option value="Python">Python</option>
-                    <option value="React">React</option>
-                    <option value="NodeJS">NodeJS</option>
-                </select>
-            </div>
 
-            <div class="form-group">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" required>
-            </div>
+            <!-- SUBMIT -->
+            <button type="submit" id="submitBtn" class="save-btn" disabled>
+                Save
+            </button>
 
-            <button type="submit" class="save-btn">Save</button>
         </form>
+
     </div>
 
+
+    <!-- TABLE -->
+
     <table id="studentTable">
+
         <thead>
             <tr>
                 <th>NAME</th>
-                <th>AGE</th>
-                <th>COURSE</th>
-                <th>GENDER</th>
                 <th>EMAIL</th>
+                <th>BIO</th>
                 <th>ACTION</th>
             </tr>
         </thead>
+
         <tbody>
-            </tbody>
+        </tbody>
+
     </table>
 
-    <script>
-        const form = document.getElementById('studentForm');
-        const tableBody = document.querySelector('#studentTable tbody');
 
-        form.addEventListener('submit', function(e) {
+    <script>
+
+        // Get elements
+
+        const form = document.getElementById("studentForm");
+
+        const nameInput = document.getElementById("name");
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+        const bioInput = document.getElementById("bio");
+
+        const nameError = document.getElementById("nameError");
+        const emailError = document.getElementById("emailError");
+        const passwordError = document.getElementById("passwordError");
+
+        const counter = document.getElementById("counter");
+        const bioWarning = document.getElementById("bioWarning");
+
+        const submitBtn = document.getElementById("submitBtn");
+
+        const tableBody = document.querySelector("#studentTable tbody");
+
+
+        // NAME VALIDATION
+
+        nameInput.addEventListener("input", function () {
+
+            if (nameInput.value.trim() === "") {
+
+                nameError.style.display = "block";
+
+            } else {
+
+                nameError.style.display = "none";
+
+            }
+
+            checkFormValidity();
+
+        });
+
+
+        // EMAIL VALIDATION
+
+        emailInput.addEventListener("input", function () {
+
+            const emailPattern =
+                /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!emailPattern.test(emailInput.value)) {
+
+                emailError.style.display = "block";
+
+            } else {
+
+                emailError.style.display = "none";
+
+            }
+
+            checkFormValidity();
+
+        });
+
+
+        // PASSWORD VALIDATION
+
+        passwordInput.addEventListener("input", function () {
+
+            if (passwordInput.value.length < 6) {
+
+                passwordError.style.display = "block";
+
+            } else {
+
+                passwordError.style.display = "none";
+
+            }
+
+            checkFormValidity();
+
+        });
+
+
+        // BIO CHARACTER COUNTER
+
+        bioInput.addEventListener("input", function () {
+
+            const length = bioInput.value.length;
+
+            counter.textContent =
+                length + " / 200 characters";
+
+
+            // Warning when close to the limit
+
+            if (length >= 180) {
+
+                bioWarning.textContent =
+                    "You are close to the 200-character limit.";
+
+            } else {
+
+                bioWarning.textContent = "";
+
+            }
+
+            checkFormValidity();
+
+        });
+
+
+        // CHECK ALL FIELDS
+
+        function checkFormValidity() {
+
+            const nameValid =
+                nameInput.value.trim() !== "";
+
+            const emailPattern =
+                /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            const emailValid =
+                emailPattern.test(emailInput.value);
+
+            const passwordValid =
+                passwordInput.value.length >= 6;
+
+            const bioValid =
+                bioInput.value.length <= 200;
+
+
+            if (
+                nameValid &&
+                emailValid &&
+                passwordValid &&
+                bioValid
+            ) {
+
+                submitBtn.disabled = false;
+
+            } else {
+
+                submitBtn.disabled = true;
+
+            }
+
+        }
+
+
+        // FORM SUBMIT
+
+        form.addEventListener("submit", function (e) {
+
             e.preventDefault();
 
-            // Fetch input values
-            const name = document.getElementById('name').value;
-            const age = document.getElementById('age').value;
-            const gender = document.querySelector('input[name="gender"]:checked').value;
-            const course = document.getElementById('course').value;
-            const email = document.getElementById('email').value;
 
-            // Create a new table row
-            const newRow = document.createElement('tr');
+            const name = nameInput.value.trim();
+            const email = emailInput.value.trim();
+            const bio = bioInput.value.trim();
+
+
+            // Create table row
+
+            const newRow = document.createElement("tr");
 
             newRow.innerHTML = `
                 <td>${name}</td>
-                <td>${age}</td>
-                <td>${course}</td>
-                <td>${gender}</td>
                 <td>${email}</td>
-                <td><button class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+                <td>${bio}</td>
+                <td>
+                    <button class="delete-btn"
+                        onclick="deleteRow(this)">
+                        Delete
+                    </button>
+                </td>
             `;
 
-            // Append row to the table body
+
             tableBody.appendChild(newRow);
 
-            // Clear the form inputs
+
+            // Reset form
+
             form.reset();
+
+
+            // Reset messages
+
+            nameError.style.display = "none";
+            emailError.style.display = "none";
+            passwordError.style.display = "none";
+
+            counter.textContent = "0 / 200 characters";
+
+            bioWarning.textContent = "";
+
+
+            // Disable button again
+
+            submitBtn.disabled = true;
+
         });
 
-        // Function to delete a table row
+
+        // DELETE ROW
+
         function deleteRow(button) {
-            const row = button.closest('tr');
+
+            const row = button.closest("tr");
+
             row.remove();
+
         }
+
     </script>
 
 </body>
+
 </html>
